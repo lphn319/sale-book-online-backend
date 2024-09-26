@@ -42,7 +42,7 @@ public class NguoiDung {
     @Column(name = "dia_chi_mua_hang")
     private String diaChiMuaHang;
 
-    @Column(name = "dia_chi_nguoi_dung")
+    @Column(name = "dia_chi_giao_hang")
     private String diaChiGiaoHang;
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY, cascade = {
@@ -64,7 +64,7 @@ public class NguoiDung {
     @JoinTable(
             name = "nguoidung_quyen",
             joinColumns = @JoinColumn(name = "ma_nguoi_dung"),
-            inverseJoinColumns = @JoinColumn(name = "ma_the_loai")
+            inverseJoinColumns = @JoinColumn(name = "ma_quyen")
     )
     private List<Quyen> danhSachQuyen;
 
