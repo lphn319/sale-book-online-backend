@@ -21,8 +21,8 @@ public class Sach {
     @Column(name = "ten_sach", length = 256)
     private String tenSach;
 
-    @Column(name = "tac_gia", length = 512)
-    private String tacGia;
+    @Column(name = "ten_tac_gia", length = 512)
+    private String tenTacGia;
 
     @Column(name = "isbn", length = 256)
     private String ISBN; //ma sach
