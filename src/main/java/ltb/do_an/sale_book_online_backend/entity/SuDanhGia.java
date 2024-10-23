@@ -26,7 +26,7 @@ public class SuDanhGia {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "ma_sach")
+    @JoinColumn(name = "ma_sach", nullable = false)
     private Sach sach;
 
     @ManyToOne(cascade = {

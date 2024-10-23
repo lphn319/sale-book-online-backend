@@ -2,15 +2,11 @@ package ltb.do_an.sale_book_online_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Data
-@Getter
-@Setter
 @Table(name = "nguoi_dung")
 public class NguoiDung {
     @Id
@@ -45,6 +41,12 @@ public class NguoiDung {
     @Column(name = "dia_chi_giao_hang")
     private String diaChiGiaoHang;
 
+    @Column(name = "da_kich_hoat")
+    private boolean daKichHoat = false;
+
+    @Column(name = "ma_kich_hoat")
+    private String maKichHoat;
+
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
@@ -57,7 +59,7 @@ public class NguoiDung {
     })
     private List<SachYeuThich> danhSachYeuThich;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
@@ -68,9 +70,9 @@ public class NguoiDung {
     )
     private List<Quyen> danhSachQuyen;
 
-    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
+    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DonHang> danhSachDonHang;
+
+    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ChiTietGioHang> danhSachChiTietGioHang;
 }

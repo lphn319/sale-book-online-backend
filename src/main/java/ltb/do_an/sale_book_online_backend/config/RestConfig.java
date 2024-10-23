@@ -23,7 +23,7 @@ public class RestConfig implements RepositoryRestConfigurer {
         // Cho phép trả về id
         config.exposeIdsFor(entityManager.getMetamodel().getEntities().stream().map(Type::getJavaType).toArray(Class[]::new));
         //CORS configuaration
-        cors.addMapping("/**").allowedOrigins(url).allowedMethods("GET", "POST", "PUT", "DELETE");
+//        cors.addMapping("/**").allowedOrigins(url).allowedMethods("GET", "POST", "PUT", "DELETE");
 
         // Chặn các methods
 //        HttpMethod[] chanCacPhuongThuc = {

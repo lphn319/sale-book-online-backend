@@ -56,10 +56,7 @@ public class Sach {
     @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<HinhAnh> danhSachHinhAnh;
 
-    @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
+    @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<SuDanhGia> danhSachDanhGia;
 
     @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY, cascade = {
