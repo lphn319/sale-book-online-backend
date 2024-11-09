@@ -1,4 +1,4 @@
-package ltb.do_an.sale_book_online_backend.service;
+package ltb.do_an.sale_book_online_backend.service.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import ltb.do_an.sale_book_online_backend.entity.NguoiDung;
 import ltb.do_an.sale_book_online_backend.entity.Quyen;
+import ltb.do_an.sale_book_online_backend.service.NguoiDungSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -23,14 +24,12 @@ public class JwtService {
     public static final String JWT_SECRET = "390920083762374358977823487898923462877578972789239892hhawuisf8978sfjhsfhui2456782354";
 
     @Autowired
-    private UserService userService;
+    private NguoiDungSecurityService userService;
 
     // Tạo JWT dựa trên username và id người dùng
     public String generateToken(String tenDangNhap) {
         Map<String, Object> claims = new HashMap<>();
         NguoiDung nguoiDung = userService.findByUsername(tenDangNhap);
-
-
 
         boolean isAdmin = false;
         boolean isStaff = false;
@@ -58,7 +57,13 @@ public class JwtService {
         claims.put("isStaff", isStaff);
         claims.put("isUser", isUser);
 
-        return createToken(claims, tenDangNhap);
+        String token = createToken(claims, tenDangNhap);
+
+        // Log thông tin token đã tạo ra
+        System.out.println("Generated Token for user " + tenDangNhap + ": " + token);
+        System.out.println("Claims: isAdmin=" + isAdmin + ", isStaff=" + isStaff + ", isUser=" + isUser);
+
+        return token;
     }
 
     // Tạo JWT với các claim đã chọn
@@ -97,6 +102,28 @@ public class JwtService {
     public Integer extractUserId(String token) {
         return extractClaim(token, claims -> claims.get("id", Integer.class));
     }
+
+    // Trích xuất Quyen người dùng từ JWT
+    public List<String> extractRoles(String token) {
+        return extractClaim(token, claims -> claims.get("roles", List.class));
+    }
+
+    public boolean isAdmin(String token) {
+        return extractClaim(token, claims -> claims.get("isAdmin", Boolean.class)) != null
+                && extractClaim(token, claims -> claims.get("isAdmin", Boolean.class));
+    }
+
+    public boolean isStaff(String token) {
+        return extractClaim(token, claims -> claims.get("isStaff", Boolean.class)) != null
+                && extractClaim(token, claims -> claims.get("isStaff", Boolean.class));
+    }
+
+    public boolean isUser(String token) {
+        return extractClaim(token, claims -> claims.get("isUser", Boolean.class)) != null
+                && extractClaim(token, claims -> claims.get("isUser", Boolean.class));
+    }
+
+
 
     // Trích xuất username (subject) từ JWT
     public String extractUsername(String token) {

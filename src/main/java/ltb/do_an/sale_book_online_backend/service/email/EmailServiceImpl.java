@@ -1,4 +1,4 @@
-package ltb.do_an.sale_book_online_backend.service;
+package ltb.do_an.sale_book_online_backend.service.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

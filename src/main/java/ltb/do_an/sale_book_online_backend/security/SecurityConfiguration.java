@@ -1,7 +1,7 @@
 package ltb.do_an.sale_book_online_backend.security;
 
 import ltb.do_an.sale_book_online_backend.filter.JwtFilter;
-import ltb.do_an.sale_book_online_backend.service.UserService;
+import ltb.do_an.sale_book_online_backend.service.NguoiDungSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +50,7 @@ public class SecurityConfiguration {
 
     @Bean
     @Autowired
-    public DaoAuthenticationProvider authenticationProvider(UserService userService){
+    public DaoAuthenticationProvider authenticationProvider(NguoiDungSecurityService userService){
         DaoAuthenticationProvider dap = new DaoAuthenticationProvider();
         dap.setUserDetailsService(userService);
         dap.setPasswordEncoder(passwordEncoder());
@@ -66,11 +66,13 @@ public class SecurityConfiguration {
                         // Cho phép POST request đến các endpoint public không cần xác thực
                         .requestMatchers(HttpMethod.POST, Endpoints.PUBLIC_POST_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.PUT, Endpoints.PUBLIC_PUT_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, Endpoints.PUBLIC_DElETE_ENDPOINTS).permitAll()
                         // Chỉ cho phép ADMIN truy cập vào các endpoint cho admin
                         .requestMatchers(HttpMethod.GET, Endpoints.ADMIN_GET_ENDPOINTS).hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, Endpoints.ADMIN_POST_ENDPOINTS).hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, Endpoints.ADMIN_PUT_ENDPOINTS).hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, Endpoints.ADMIN_DELETE_ENDPOINTS).hasAnyAuthority("ADMIN")
+
 
 
         );

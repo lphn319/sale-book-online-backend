@@ -1,7 +1,7 @@
 package ltb.do_an.sale_book_online_backend.filter;
 
-import ltb.do_an.sale_book_online_backend.service.JwtService;
-import ltb.do_an.sale_book_online_backend.service.UserService;
+import ltb.do_an.sale_book_online_backend.service.JWT.JwtService;
+import ltb.do_an.sale_book_online_backend.service.NguoiDungSecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private UserService userDetailService;
+    private NguoiDungSecurityService userDetailService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
@@ -31,13 +31,31 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader!=null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
             username = jwtService.extractUsername(token);
+            System.out.println("Token được giải mã cho người dùng: " + username);
+
+            // Kiểm tra vai trò cụ thể của người dùng và in ra log
+            if (jwtService.isAdmin(token)) {
+                System.out.println("Người dùng là Admin");
+            } else if (jwtService.isStaff(token)) {
+                System.out.println("Người dùng là Staff");
+            } else if (jwtService.isUser(token)) {
+                System.out.println("Người dùng là User");
+            } else {
+                System.out.println("Người dùng không có vai trò hợp lệ");
+            }
         }
         if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails = userDetailService.loadUserByUsername(username);
+
+
+
             if (jwtService.validateToken(token, userDetails)){
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                        null,
+                        userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("Authentication after setting SecurityContext: " + SecurityContextHolder.getContext().getAuthentication());
             }
         }
         filterChain.doFilter(request, response);

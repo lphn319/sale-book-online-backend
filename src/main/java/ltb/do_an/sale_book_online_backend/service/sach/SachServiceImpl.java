@@ -9,6 +9,7 @@ import ltb.do_an.sale_book_online_backend.dao.TheLoaiRepository;
 import ltb.do_an.sale_book_online_backend.entity.Sach;
 import ltb.do_an.sale_book_online_backend.entity.TheLoai;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,48 +38,65 @@ public class SachServiceImpl implements SachService {
     @Override
     public ResponseEntity<?> luu(JsonNode sachJson) {
         try {
+            System.out.println("JSON trước khi ánh xạ: " + sachJson.toString());
             Sach sach = objectMapper.treeToValue(sachJson, Sach.class);
+            System.out.println("Đối tượng Sach sau khi ánh xạ: " + sach.toString());
 
-            //Luu the loai cua sach
-            List<Integer> danhSachMaTheLoai = objectMapper.readValue(sachJson.get("maTheLoai").traverse(), new TypeReference<List<Integer>>() {
-            });
+            // Lưu danh sách thể loại
+            List<Integer> danhSachMaTheLoai = objectMapper.readValue(sachJson.get("danhSachMaTheLoai").traverse(), new TypeReference<List<Integer>>() {});
             List<TheLoai> danhSachTheLoai = new ArrayList<>();
             for (int maTheLoai : danhSachMaTheLoai) {
                 Optional<TheLoai> theLoai = theLoaiRepository.findById(maTheLoai);
-                danhSachTheLoai.add(theLoai.get());
+                if (theLoai.isPresent()) {
+                    danhSachTheLoai.add(theLoai.get());
+                } else {
+                    System.out.println("Không tìm thấy thể loại với mã: " + maTheLoai);
+                    return ResponseEntity.badRequest().body("Thể loại với mã " + maTheLoai + " không tồn tại");
+                }
             }
             sach.setDanhSachTheLoai(danhSachTheLoai);
 
-            //Luu sach
+            // Lưu sách
             sachRepository.save(sach);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok("Lưu sách thành công!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Lỗi trong quá trình lưu sách: " + e.getMessage());
         }
     }
+
 
     @Override
     @Transactional
     public ResponseEntity<?> capNhat(JsonNode sachJson) {
         try {
+            System.out.println("JSON trước khi ánh xạ: " + sachJson.toString());
             Sach sach = objectMapper.treeToValue(sachJson, Sach.class);
-            //Luu the loai cua sach
-            List<Integer> danhSachMaTheLoai = objectMapper.readValue(sachJson.get("maTheLoai").traverse(), new
-                    TypeReference<List<Integer>>() {});
+            System.out.println("Đối tượng Sach sau khi ánh xạ: " + sach.toString());
+
+            // Lưu danh sách thể loại
+            List<Integer> danhSachMaTheLoai = objectMapper.readValue(sachJson.get("danhSachMaTheLoai").traverse(), new TypeReference<List<Integer>>() {});
             List<TheLoai> danhSachTheLoai = new ArrayList<>();
             for (int maTheLoai : danhSachMaTheLoai) {
                 Optional<TheLoai> theLoai = theLoaiRepository.findById(maTheLoai);
-                danhSachTheLoai.add(theLoai.get());
+                if (theLoai.isPresent()) {
+                    danhSachTheLoai.add(theLoai.get());
+                } else {
+                    System.out.println("Không tìm thấy thể loại với mã: " + maTheLoai);
+                    return ResponseEntity.badRequest().body("Thể loại với mã " + maTheLoai + " không tồn tại");
+                }
             }
+            sach.setDanhSachTheLoai(danhSachTheLoai);
+
+            // Lưu sách
             sachRepository.save(sach);
-
-            return ResponseEntity.ok("Success!");
-
+            return ResponseEntity.ok("Cập nhật sách thành công!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Lỗi trong quá trình cập nhật sách: " + e.getMessage());
         }
     }
+
 
     @Override
     public long layTatCaSach() {

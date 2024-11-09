@@ -1,5 +1,7 @@
 package ltb.do_an.sale_book_online_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -31,4 +33,6 @@ public class Quyen {
                     inverseJoinColumns = @JoinColumn(name = "ma_nguoi_dung")
             )
     List<NguoiDung> danhSachNguoiDung;
+
+
 }

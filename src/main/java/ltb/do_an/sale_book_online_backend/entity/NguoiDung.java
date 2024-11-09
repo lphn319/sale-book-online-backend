@@ -1,8 +1,10 @@
 package ltb.do_an.sale_book_online_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -41,11 +43,18 @@ public class NguoiDung {
     @Column(name = "dia_chi_giao_hang")
     private String diaChiGiaoHang;
 
-    @Column(name = "da_kich_hoat")
+    @Column(name = "da_kich_hoat", nullable = false)
     private boolean daKichHoat = false;
 
     @Column(name = "ma_kich_hoat")
     private String maKichHoat;
+
+    @Column(name = "ngay_sinh")
+    private Date ngaySinh; // Năm sinh
+
+    @Column(name = "avatar", columnDefinition = "LONGTEXT")
+    @Lob
+    private String avatar; // Ảnh đại diện
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -75,4 +84,24 @@ public class NguoiDung {
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChiTietGioHang> danhSachChiTietGioHang;
+
+    @Override
+    public String toString() {
+        return "NguoiDung{" +
+                "maNguoiDung=" + maNguoiDung +
+                ", hoDem='" + hoDem + '\'' +
+                ", ten='" + ten + '\'' +
+                ", tenDangNhap='" + tenDangNhap + '\'' +
+                ", matKhau='" + matKhau + '\'' +
+                ", gioiTinh=" + gioiTinh +
+                ", email='" + email + '\'' +
+                ", soDienThoai='" + soDienThoai + '\'' +
+                ", diaChiMuaHang='" + diaChiMuaHang + '\'' +
+                ", diaChiGiaoHang='" + diaChiGiaoHang + '\'' +
+                ", daKichHoat=" + daKichHoat +
+                ", maKichHoat='" + maKichHoat + '\'' +
+                ", ngaySinh=" + ngaySinh +
+                ", avatar='" + avatar + '\'' +
+                '}';
+    }
 }

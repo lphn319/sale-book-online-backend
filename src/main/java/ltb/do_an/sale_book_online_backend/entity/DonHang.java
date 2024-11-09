@@ -28,6 +28,12 @@ public class DonHang {
     @Column(name = "dia_chi_nhan_hang", length = 512)
     private String diaChiNhanHang;
 
+    @Column(name = "ho_ten", length = 512)
+    private String hoTen;
+
+    @Column(name = "so_dien_thoai")
+    private String soDienThoai;
+
     @Column(name = "tong_tien_san_pham")
     private double tongTienSanPham;
 
@@ -39,6 +45,9 @@ public class DonHang {
 
     @Column(name = "tong_tien")
     private double tongTien;
+
+    @Column(name = "trang_thai")
+    private String trangThai; // Trạng thái của đơn hàng
 
     @OneToMany(mappedBy = "donHang", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChiTietDonHang> danhSachChiTietDonHang;

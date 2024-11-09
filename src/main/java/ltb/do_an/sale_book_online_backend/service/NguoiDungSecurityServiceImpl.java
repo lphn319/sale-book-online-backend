@@ -16,12 +16,12 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class NguoiDungSecurityServiceImpl implements NguoiDungSecurityService {
     private NguoiDungRepository nguoiDungRepository;
     private QuyenRepository quyenRepository;
 
     @Autowired
-    public UserServiceImpl(NguoiDungRepository nguoiDungRepository, QuyenRepository quyenRepository) {
+    public NguoiDungSecurityServiceImpl(NguoiDungRepository nguoiDungRepository, QuyenRepository quyenRepository) {
         this.nguoiDungRepository = nguoiDungRepository;
         this.quyenRepository = quyenRepository;
     }
@@ -31,15 +31,19 @@ public class UserServiceImpl implements UserService {
         return nguoiDungRepository.findByTenDangNhap(tenDangNhap);
     }
 
+    // Khi "dap" ở Security Configuration được gọi thì nó sẽ chay hàm này để lấy ra user trong csdl
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         NguoiDung nguoiDung = findByUsername(username);
         if (nguoiDung == null) {
             throw new UsernameNotFoundException("Tài khoản không tồn tại!");
         }
-        return new User(nguoiDung.getTenDangNhap(), nguoiDung.getMatKhau(), rolesToAuthorities(nguoiDung.getDanhSachQuyen()));
+        Collection<? extends GrantedAuthority> authorities = rolesToAuthorities(nguoiDung.getDanhSachQuyen());
+        System.out.println("User Authorities: " + authorities); // Log quyền của người dùng
 
+        return new User(nguoiDung.getTenDangNhap(), nguoiDung.getMatKhau(), authorities);
     }
+
 
     private Collection<? extends GrantedAuthority> rolesToAuthorities(Collection<Quyen> quyens) {
         return quyens.stream().map(quyen -> new SimpleGrantedAuthority(quyen.getTenQuyen())).collect(Collectors.toList());
