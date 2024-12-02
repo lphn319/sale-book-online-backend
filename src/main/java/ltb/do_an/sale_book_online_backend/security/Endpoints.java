@@ -42,7 +42,6 @@ public class Endpoints {
     };
     public static final String[] PUBLIC_DElETE_ENDPOINTS = {
             "/tai-khoan/xoa-tai-khoan/**",
-
     };
     public static final String[] ADMIN_GET_ENDPOINTS = {
             "/nguoi-dung",
